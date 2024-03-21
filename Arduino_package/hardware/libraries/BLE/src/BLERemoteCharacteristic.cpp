@@ -100,12 +100,12 @@ uint32_t BLERemoteCharacteristic::readData32() {
 
 //--------- Write Char Value --------//
 
-bool BLERemoteCharacteristic::writeString(String str) {
-    return writeString(str.c_str());
+bool BLERemoteCharacteristic::writeString(String str, T_GATT_WRITE_TYPE type) {
+    return writeString(str.c_str(), type);
 }
 
-bool BLERemoteCharacteristic::writeString(const char* str) {
-    return setData((uint8_t*) str, strlen(str));
+bool BLERemoteCharacteristic::writeString(const char* str, T_GATT_WRITE_TYPE type) {
+    return setData((uint8_t*) str, strlen(str), type);
 }
 
 bool BLERemoteCharacteristic::writeData8(uint8_t num) {
@@ -126,7 +126,7 @@ bool BLERemoteCharacteristic::writeData32(int num) {
 
 //------------ Modify Char ------------//
 
-bool BLERemoteCharacteristic::setData(uint8_t* data, uint16_t datalen) {
+bool BLERemoteCharacteristic::setData(uint8_t* data, uint16_t datalen, T_GATT_WRITE_TYPE type) {
     if (!canWrite()) {
         printf("Characteristic %s error: write not permitted \n", _uuid.str());
         return false;
@@ -137,7 +137,7 @@ bool BLERemoteCharacteristic::setData(uint8_t* data, uint16_t datalen) {
         return false;
     }
     // Attempt to write
-    if (client_attr_write(_pClient->getConnId(), _pClient->getClientId(),  GATT_WRITE_TYPE_REQ, _valueHandle, datalen, data) == GAP_CAUSE_SUCCESS) {
+    if (client_attr_write(_pClient->getConnId(), _pClient->getClientId(),  type, _valueHandle, datalen, data) == GAP_CAUSE_SUCCESS) {
         // Check for write callback semaphore indicating data write successful
         if (xSemaphoreTake(_writeSemaphore, CB_WAIT_TIMEOUT/portTICK_PERIOD_MS) != pdTRUE) {
             printf("Characteristic %s error: set data timeout \n", _uuid.str());

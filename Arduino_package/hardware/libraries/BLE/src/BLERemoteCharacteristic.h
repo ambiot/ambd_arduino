@@ -43,15 +43,15 @@ class BLERemoteCharacteristic {
         uint32_t readData32();
 
         //---------- Write Char Value ---------//
-        bool writeString(String str);
-        bool writeString(const char* str);
+        bool writeString(String str, T_GATT_WRITE_TYPE type = GATT_WRITE_TYPE_REQ);
+        bool writeString(const char* str, T_GATT_WRITE_TYPE type = GATT_WRITE_TYPE_REQ);
         bool writeData8(uint8_t num);
         bool writeData16(uint16_t num);
         bool writeData32(uint32_t num);
         bool writeData32(int num);
 
         //------------ Modify Char ------------//
-        bool setData(uint8_t* data, uint16_t datalen);
+        bool setData(uint8_t* data, uint16_t datalen, T_GATT_WRITE_TYPE type = GATT_WRITE_TYPE_REQ);
         uint16_t getData(uint8_t* data, uint16_t datalen);
         void enableNotifyIndicate(bool notify = 1);
         void disableNotifyIndicate();
